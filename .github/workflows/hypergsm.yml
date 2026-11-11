@@ -1,0 +1,182 @@
+name: HyperGSM CI / Release
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build HyperGSM
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Validate metadata
+        id: meta
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          props = {}
+          for line in Path("module.prop").read_text().splitlines():
+              if "=" in line:
+                  key, value = line.split("=", 1)
+                  props[key] = value
+
+          update = json.loads(Path("update.json").read_text())
+
+          version = props["version"]
+          code = int(props["versionCode"])
+          expected_zip = (
+              "https://github.com/sandtomatowich-hubexe/HyperGSM/"
+              f"releases/download/{version}/HyperGSM-{version}.zip"
+          )
+
+          assert update["version"] == version, "Version mismatch"
+          assert int(update["versionCode"]) == code, "VersionCode mismatch"
+          assert update["zipUrl"] == expected_zip, "zipUrl mismatch"
+
+          if os.environ["EVENT_NAME"] == "push":
+              ref = os.environ["REF_NAME"]
+              if ref.startswith("v") and ref != version:
+                  raise SystemExit(
+                      f"Tag {ref} does not match module version {version}"
+                  )
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"version={version}\n")
+
+          print(f"Metadata OK: {version} ({code})")
+          PY
+
+      - name: Build Flashable ZIP
+        id: package
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          mkdir -p dist
+
+          ZIP="dist/HyperGSM-${VERSION}.zip"
+
+          zip -r "$ZIP" \
+            META-INF \
+            webui \
+            CHANGELOG.md \
+            LICENSE \
+            README.md \
+            apply.sh \
+            common.sh \
+            customize.sh \
+            diag.sh \
+            module.prop \
+            service.sh \
+            settings.conf \
+            status.sh \
+            uninstall.sh \
+            update.json
+
+          unzip -t "$ZIP"
+
+          python3 - "$ZIP" <<'PY'
+          import sys
+          import zipfile
+
+          with zipfile.ZipFile(sys.argv[1]) as z:
+              names = z.namelist()
+              required = [
+                  "module.prop",
+                  "META-INF/com/google/android/update-binary",
+                  "webui/index.html",
+              ]
+
+              for item in required:
+                  if item not in names:
+                      raise SystemExit(f"Missing from ZIP: {item}")
+
+          print("Flashable ZIP structure verified.")
+          PY
+
+          echo "zip_path=$ZIP" >> "$GITHUB_OUTPUT"
+
+      - name: Upload CI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: HyperGSM-${{ steps.meta.outputs.version }}-CI
+          path: ${{ steps.package.outputs.zip_path }}
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZIP_PATH: ${{ steps.package.outputs.zip_path }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$ZIP_PATH" --clobber
+          else
+            gh release create "$TAG" "$ZIP_PATH" \
+              --title "HyperGSM $TAG" \
+              --notes-file CHANGELOG.md
+          fi
+
+      - name: Check Telegram configuration
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TOPIC_ID: ${{ secrets.TELEGRAM_TOPIC_ID }}
+        run: |
+          test -n "$BOT_TOKEN" || {
+            echo "Missing TELEGRAM_BOT_TOKEN"
+            exit 1
+          }
+
+          test -n "$CHAT_ID" || {
+            echo "Missing TELEGRAM_CHAT_ID"
+            exit 1
+          }
+
+          test -n "$TOPIC_ID" || {
+            echo "Missing TELEGRAM_TOPIC_ID"
+            exit 1
+          }
+
+      - name: Send ZIP to Telegram
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TOPIC_ID: ${{ secrets.TELEGRAM_TOPIC_ID }}
+          TAG: ${{ github.ref_name }}
+          VERSION: ${{ steps.meta.outputs.version }}
+          ZIP_PATH: ${{ steps.package.outputs.zip_path }}
+        run: |
+          RESPONSE=$(curl --silent --show-error --fail-with-body \
+            --form-string "chat_id=$CHAT_ID" \
+            --form-string "message_thread_id=$TOPIC_ID" \
+            --form-string "caption=HyperGSM ${VERSION} | Stable Release" \
+            --form "document=@${ZIP_PATH}" \
+            "https://api.telegram.org/bot${BOT_TOKEN}/sendDocument")
+
+          printf '%s' "$RESPONSE" | python3 -c '
+          import json, sys
+          result = json.load(sys.stdin)
+          if not result.get("ok"):
+              raise SystemExit("Telegram delivery failed: " + str(result))
+          print("Telegram delivery successful.")
+          '
