@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="light" data-wallpaper="none" data-anim="full">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>HyperGSM</title>
+<link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wallpaper wp-none" id="wallpaperLayer"></div>
+<div class="app" id="app">
+  <header class="appbar">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></div>
+      <div class="brand-name">HyperGSM</div>
+    </div>
+    <div class="status-pill" id="livePill"><span class="dot"></span><span id="livePillText">Checking…</span></div>
+  </header>
+
+  <div class="page-head">
+    <div class="eyebrow"><b id="devCode">—</b> · <span id="modeEyebrow">—</span> mode</div>
+    <h1 id="pageTitle">Home</h1>
+    <p id="pageSub">GMS and notification fixes.</p>
+  </div>
+
+  <main>
+    <section class="page" id="page-home">
+      <div class="hero" style="cursor:default;">
+        <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+        <div class="hero-body">
+          <div class="hero-label">PUSH CONNECTION (FCM)</div>
+          <div class="hero-title" id="heroFcm">—</div>
+          <div class="hero-sub" id="heroFcmSub">Open sockets to Google push servers</div>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-label">ROM MODE</div><div class="stat-value" id="stMode">—</div></div>
+        <div class="stat-card"><div class="stat-label">REGION</div><div class="stat-value" id="stRegion">—</div></div>
+        <div class="stat-card"><div class="stat-label">PLAY SERVICES</div><div class="stat-value small" id="stGms">—</div></div>
+        <div class="stat-card"><div class="stat-label">BUILD</div><div class="stat-value small" id="stRom">—</div></div>
+      </div>
+      <div class="section-label">QUICK ACTIONS</div>
+      <div class="action-card">
+        <div class="action-row">
+          <div class="action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+          <div class="action-body"><div class="action-title">Notification fix</div><div class="action-sub">Keep GMS and priority apps unrestricted</div></div>
+          <div class="switch skel" id="swNotif"></div>
+        </div>
+        <div class="action-row">
+          <div class="action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></div>
+          <div class="action-body"><div class="action-title">Keep applied</div><div class="action-sub">Re-apply every 15 minutes</div></div>
+          <div class="switch skel" id="swKeep"></div>
+        </div>
+      </div>
+      <button class="apply-btn" id="applyBtn">Apply now</button>
+      <div class="status-line" id="status">Loading…</div>
+    </section>
+
+    <section class="page" id="page-notify" hidden>
+      <div class="section-head"><div class="section-label">PRIORITY APPS</div>
+        <div class="section-note">Exempted from Doze, standby and background limits. Google services are always included on CN.</div></div>
+      <div class="card">
+        <div class="chip-input-row">
+          <input class="chip-input" id="pkgInput" placeholder="com.example.app" autocapitalize="none" autocorrect="off" spellcheck="false">
+          <button class="chip-add" id="pkgAdd">Add</button>
+        </div>
+        <div class="chip-list" id="chipList"></div>
+      </div>
+      <div class="section-head"><div class="section-label">DIAGNOSTICS</div>
+        <div class="section-note">Collects push, Doze and notification info. Send me this if delays continue.</div></div>
+      <button class="secondary-btn" id="diagBtn">Run diagnostics</button>
+      <pre class="card" id="diagOut" style="margin-top:10px; white-space:pre-wrap; word-break:break-all; font-size:11px; max-height:320px; overflow:auto;" hidden></pre>
+      <button class="apply-btn" id="applyBtnN">Apply now</button>
+      <div class="status-line" id="statusN"></div>
+    </section>
+
+    <section class="page" id="page-battery" hidden>
+      <div class="section-head"><div class="section-label">GMS BATTERY PROFILE</div>
+        <div class="section-note">Used on Global ROMs. On CN, Google services are kept unrestricted instead.</div></div>
+      <div class="card">
+        <div class="segmented" id="segProfile">
+          <button class="seg-btn" data-val="off">Off</button>
+          <button class="seg-btn" data-val="balanced">Balanced</button>
+          <button class="seg-btn" data-val="aggressive">Aggressive</button>
+        </div>
+        <p style="margin:14px 2px 0; font-size:13px; color:var(--text-dim); line-height:1.45;" id="profileDesc"></p>
+      </div>
+      <div class="section-label">ROM MODE</div>
+      <div class="card">
+        <div class="segmented" id="segMode">
+          <button class="seg-btn" data-val="auto">Auto</button>
+          <button class="seg-btn" data-val="cn">CN</button>
+          <button class="seg-btn" data-val="global">Global</button>
+        </div>
+      </div>
+      <button class="apply-btn" id="applyBtnB">Apply now</button>
+      <div class="status-line" id="statusB"></div>
+    </section>
+
+    <section class="page" id="page-about" hidden>
+      <div class="hero" style="cursor:default;">
+        <div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></div>
+        <div class="hero-body"><div class="hero-label">MODULE</div><div class="hero-title">HyperGSM</div><div class="hero-sub">v0.1 · no framework patch</div></div>
+      </div>
+      <div class="section-label">RECENT LOG</div>
+      <pre class="card" id="logOut" style="white-space:pre-wrap; word-break:break-all; font-size:11px; max-height:360px; overflow:auto;">—</pre>
+    </section>
+  </main>
+
+  <div class="tabbar"><div class="tabbar-inner">
+    <button class="tab active navitem" data-page="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg><span>Home</span></button>
+    <button class="tab navitem" data-page="notify"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span>Notify</span></button>
+    <button class="tab navitem" data-page="battery"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="16" height="10" rx="2"/><path d="M22 11v2M6 12h6"/></svg><span>Battery</span></button>
+    <button class="tab navitem" data-page="about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg><span>About</span></button>
+  </div></div>
+</div>
+<div class="toast-stack" id="toastStack"></div>
+<script src="app.js"></script>
+</body>
+</html>
