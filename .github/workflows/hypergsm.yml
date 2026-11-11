@@ -166,10 +166,21 @@ jobs:
           VERSION: ${{ steps.meta.outputs.version }}
           ZIP_PATH: ${{ steps.package.outputs.zip_path }}
         run: |
+          CAPTION=$(cat <<EOF
+          <b>HyperGSM</b> | <b>STABLE RELEASE</b>
+          <code>VERSION   ${VERSION}
+          CHANNEL   STABLE
+          STATUS    RELEASED</code>
+
+          <a href="https://github.com/sandtomatowich-hubexe/HyperGSM/releases/tag/${TAG}">View GitHub Release</a>
+          EOF
+          )
+
           RESPONSE=$(curl --silent --show-error --fail-with-body \
             --form-string "chat_id=$CHAT_ID" \
             --form-string "message_thread_id=$TOPIC_ID" \
-            --form-string "caption=HyperGSM ${VERSION} | Stable Release" \
+            --form-string "parse_mode=HTML" \
+            --form-string "caption=$CAPTION" \
             --form "document=@${ZIP_PATH}" \
             "https://api.telegram.org/bot${BOT_TOKEN}/sendDocument")
 
