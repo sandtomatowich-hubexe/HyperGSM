@@ -191,7 +191,7 @@
     ["applyBtn","applyBtnN","applyBtnB"].forEach(function(id){ $(id).addEventListener("click", function(){ applyNow(true); }); });
     $("diagBtn").addEventListener("click", async function(){
       $("diagBtn").disabled = true; $("diagBtn").textContent = "Collecting…";
-      var r = await ksuExec("sh " + MODDIR + "/diag.sh >/dev/null 2>&1; cat " + MODDIR + "/webui/diag.txt");
+      var r = await ksuExec("sh " + MODDIR + "/diag.sh >/dev/null 2>&1; cat " + MODDIR + "/webroot/diag.txt");
       $("diagBtn").disabled = false; $("diagBtn").textContent = "Run diagnostics";
       var out = $("diagOut"); out.hidden = false; out.textContent = r.stdout || "No output.";
     });

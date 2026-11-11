@@ -2,7 +2,7 @@
 
 A KernelSU / Magisk / APatch module for HyperOS that keeps Google Play Services and push notifications working properly on CN ROMs, and tames Play Services battery drain on Global ROMs. It includes a WebUI for configuration.
 
-> **Status:** v0.1, first test build. Developed against the Poco X6 Pro (`duchamp`) on HyperOS 3.0.305 / Android 16.
+> **Status:** v0.2, test build. Developed against the Poco X6 Pro (`duchamp`) on HyperOS 3.0.305 / Android 16.
 
 ## What it does
 
@@ -38,7 +38,8 @@ The ROM mode is detected from the build region (`ro.miui.build.region`). You can
 ## Requirements
 
 - Android 14 or newer (built for HyperOS on Android 16)
-- Root with KernelSU, Magisk or APatch. The WebUI needs a manager that supports module WebUI.
+- Root with KernelSU, Magisk or APatch.
+- For the WebUI: KernelSU or APatch (shows an Open button on the module), or a WebUI app such as MMRL / KsuWebUI on Magisk. The WebUI files live in `webroot/`.
 
 ## Install
 

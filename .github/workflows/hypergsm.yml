@@ -73,7 +73,7 @@ jobs:
 
           zip -r "$ZIP" \
             META-INF \
-            webui \
+            webroot \
             CHANGELOG.md \
             LICENSE \
             README.md \
@@ -99,7 +99,7 @@ jobs:
               required = [
                   "module.prop",
                   "META-INF/com/google/android/update-binary",
-                  "webui/index.html",
+                  "webroot/index.html",
               ]
 
               for item in required:

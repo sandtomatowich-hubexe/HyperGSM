@@ -1,7 +1,7 @@
 #!/system/bin/sh
 # Collects what we need to decide whether a framework patch is required.
 MODDIR=${0%/*}
-OUT=$MODDIR/webui/diag.txt
+OUT=$MODDIR/webroot/diag.txt
 . "$MODDIR/common.sh"
 [ -f "$MODDIR/settings.conf" ] && . "$MODDIR/settings.conf"
 {
