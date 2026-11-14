@@ -156,7 +156,7 @@ jobs:
             exit 1
           }
 
-      - name: Send ZIP to Telegram
+      - name: Send Rich Release to Telegram
         if: startsWith(github.ref, 'refs/tags/')
         env:
           BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -166,28 +166,102 @@ jobs:
           VERSION: ${{ steps.meta.outputs.version }}
           ZIP_PATH: ${{ steps.package.outputs.zip_path }}
         run: |
-          CAPTION=$(cat <<EOF
-          <b>HyperGSM</b> | <b>STABLE RELEASE</b>
-          <code>VERSION   ${VERSION}
-          CHANNEL   STABLE
-          STATUS    RELEASED</code>
+          RICH_MESSAGE=$(python3 - "$TAG" "$VERSION" <<'PY'
+          import sys
+          import re
+          import json
+          import html
+          from pathlib import Path
 
-          <a href="https://github.com/sandtomatowich-hubexe/HyperGSM/releases/tag/${TAG}">View GitHub Release</a>
-          EOF
+          tag, version = sys.argv[1:3]
+          changelog = Path("CHANGELOG.md").read_text(encoding="utf-8")
+
+          section = re.search(
+              rf"^## {re.escape(tag)}\s*$\n(.*?)(?=^## |\Z)",
+              changelog,
+              re.MULTILINE | re.DOTALL
+          )
+
+          if not section:
+              raise SystemExit(f"Changelog section not found for {tag}")
+
+          changes = re.findall(
+              r"^- (.+)$",
+              section.group(1),
+              re.MULTILINE
+          )
+
+          if not changes:
+              raise SystemExit(f"No changelog entries found for {tag}")
+
+          def format_change(value):
+              value = html.escape(value)
+              return re.sub(r"`([^`]+)`", r"<code>\1</code>", value)
+
+          release_url = (
+              "https://github.com/sandtomatowich-hubexe/"
+              f"HyperGSM/releases/tag/{tag}"
+          )
+
+          items = "".join(
+              f"<li>{format_change(change)}</li>"
+              for change in changes
+          )
+
+          content = f"""
+          <h2>HyperGSM</h2>
+          <p><b>STABLE RELEASE</b></p>
+
+          <h3>RELEASE INFORMATION</h3>
+          <table bordered striped compact>
+            <tr><th>FIELD</th><th>VALUE</th></tr>
+            <tr><td>VERSION</td><td><code>{html.escape(version)}</code></td></tr>
+            <tr><td>CHANNEL</td><td>STABLE</td></tr>
+            <tr><td>STATUS</td><td>RELEASED</td></tr>
+            <tr><td>AUTHOR</td><td>Sep</td></tr>
+            <tr><td>PLATFORM</td><td>Android</td></tr>
+          </table>
+
+          <h3>WHAT'S NEW</h3>
+          <ul>{items}</ul>
+
+          <h3>GITHUB RELEASE</h3>
+          <blockquote>
+            <a href="{release_url}">View GitHub Release</a>
+            <cite>HyperGSM {html.escape(version)}</cite>
+          </blockquote>
+
+          <tg-document src="tg://document?id=release_zip"></tg-document>
+          """
+
+          payload = {
+              "html": content,
+              "media": [
+                  {
+                      "id": "release_zip",
+                      "media": {
+                          "type": "document",
+                          "media": "attach://release_zip"
+                      }
+                  }
+              ]
+          }
+
+          print(json.dumps(payload, separators=(",", ":")))
+          PY
           )
 
           RESPONSE=$(curl --silent --show-error --fail-with-body \
             --form-string "chat_id=$CHAT_ID" \
             --form-string "message_thread_id=$TOPIC_ID" \
-            --form-string "parse_mode=HTML" \
-            --form-string "caption=$CAPTION" \
-            --form "document=@${ZIP_PATH}" \
-            "https://api.telegram.org/bot${BOT_TOKEN}/sendDocument")
+            --form-string "rich_message=$RICH_MESSAGE" \
+            --form "release_zip=@${ZIP_PATH}" \
+            "https://api.telegram.org/bot${BOT_TOKEN}/sendRichMessage")
 
           printf '%s' "$RESPONSE" | python3 -c '
           import json, sys
           result = json.load(sys.stdin)
           if not result.get("ok"):
               raise SystemExit("Telegram delivery failed: " + str(result))
-          print("Telegram delivery successful.")
+          print("Telegram Rich Release delivered successfully.")
           '
