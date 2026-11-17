@@ -5,6 +5,7 @@ sleep 25
 sh "$MODDIR/apply.sh"
 while :; do
   sleep 900
-  . "$MODDIR/settings.conf" 2>/dev/null
+  KEEP_APPLIED=1
+  [ -f "$MODDIR/settings.conf" ] && . "$MODDIR/settings.conf"
   [ "$KEEP_APPLIED" = "1" ] && sh "$MODDIR/apply.sh"
 done

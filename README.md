@@ -2,32 +2,31 @@
 
 A KernelSU / Magisk / APatch module for HyperOS that keeps Google Play Services and push notifications working properly on CN ROMs, and tames Play Services battery drain on Global ROMs. It includes a WebUI for configuration.
 
-> **Status:** v0.2, test build. Developed against the Poco X6 Pro (`duchamp`) on HyperOS 3.0.305 / Android 16.
+> **Status:** v0.3, test build. Developed against the Poco X6 Pro (`duchamp`) on HyperOS 3.0.305 / Android 16.
 
 ## What it does
 
 **1. Notification delay fix (no framework patch)**
-Keeps Google services and your chosen apps out of background restrictions:
+Keeps your priority apps out of background restrictions:
 - Doze whitelist
 - `RUN_IN_BACKGROUND` / `RUN_ANY_IN_BACKGROUND` appops
 - MIUI autostart appop (best effort)
 - "Active" app standby bucket
 
-Telegram and WhatsApp are preloaded as priority apps. Add any other package from the WebUI.
+Telegram and WhatsApp are preloaded as priority apps. Add any other package from the WebUI. Changes apply immediately.
 
-**2. CN ROM support**
-- Adds a sysconfig allowlist so Play Services is allowed in power-save and data-saver modes.
-- Always keeps Play Services, GSF and Play Store unrestricted.
-
-**3. Global ROM battery tuning**
+**2. GMS battery profiles (any ROM)**
 
 | Profile | Behaviour |
 |---|---|
-| Off | Nothing disabled. |
+| Off | Nothing disabled. Play Services, GSF and Play Store are kept unrestricted for the fastest push. |
 | Balanced | Disables Play Services analytics and measurement components. Push, location and sync are untouched. |
 | Aggressive | Balanced, plus removes Play Services from the Doze whitelist. Saves more, but push can arrive late. |
 
-The ROM mode is detected from the build region (`ro.miui.build.region`). You can force CN or Global from the WebUI.
+The default is chosen at install: **Off** on CN ROMs, **Balanced** on Global ROMs. Change it on the Battery page, pick a profile and tap *Apply*.
+
+**3. CN ROM support**
+On CN ROMs the installer also adds a sysconfig allowlist so Play Services is allowed in power-save and data-saver modes.
 
 ## What it does not do
 
@@ -49,9 +48,9 @@ The ROM mode is detected from the build region (`ro.miui.build.region`). You can
 
 ## Using the WebUI
 
-- **Home:** push connection status, ROM mode, Play Services state, quick toggles, Apply.
-- **Notify:** priority app list and a diagnostics button.
-- **Battery:** GMS battery profile and ROM mode override.
+- **Home:** push connection status, active profile, Play Services state, quick toggles, Apply.
+- **Notify:** priority app list and a diagnostics button (runs in the background).
+- **Battery:** GMS battery profile list with an Apply button.
 - **About:** recent module log.
 
 Settings live in `/data/adb/modules/hypergsm/settings.conf`. Edit by hand if you prefer, then run `sh /data/adb/modules/hypergsm/apply.sh`.

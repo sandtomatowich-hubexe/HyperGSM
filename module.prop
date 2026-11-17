@@ -1,7 +1,7 @@
 id=hypergsm
 name=HyperGSM
-version=v0.2
-versionCode=2
+version=v0.3
+versionCode=3
 author=Sep
 description=GMS push/notification fixes for CN HyperOS and GMS battery tuning for Global. WebUI included.
 updateJson=https://raw.githubusercontent.com/sandtomatowich-hubexe/HyperGSM/main/update.json
