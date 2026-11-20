@@ -8,7 +8,8 @@
   />
 
   <img
-    src="https://raw.githubusercontent.com/sandtomatowich-hubexe/sandtomatowich-hubexe/main/HyperGSM.svg"
+ # What is HyperGSM?  
+ src="https://raw.githubusercontent.com/sandtomatowich-hubexe/sandtomatowich-hubexe/main/HyperGSM.svg"
     alt="HyperGSM"
     width="100%"
   />
