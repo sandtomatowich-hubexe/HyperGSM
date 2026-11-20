@@ -1,3 +1,4 @@
+# HyperGSM
 <p align="center">
   <img
     src="assets/HyperGSM-Banner.png"
@@ -13,7 +14,7 @@
     width="100%"
   />
 </p>
-###What is HyperGSM?
+
 
 **HyperGSM (Hyper Google System Manager)** is an Android system management module designed to improve Google Mobile Services integration, notification reliability, and background behavior on HyperOS.
 
