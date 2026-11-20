@@ -1,5 +1,3 @@
-HyperGSM
-
 <p align="center">
   <!-- TODO: Replace with the actual battery banner image URL -->
   <img src="assets/HyperGSM-Banner.png" alt="HyperGSM Banner" width="100%">
@@ -12,7 +10,8 @@ HyperGSM
     width="100%"
   />
 </p>
-</p>HyperGSM is an Android system management module focused on Google Mobile Services integration, notification reliability, and GMS battery management on HyperOS.
+### What's HyperGSM?
+HyperGSM is an Android system management module focused on Google Mobile Services integration, notification reliability, and GMS battery management on HyperOS.
 
 Designed with a modular architecture, HyperGSM provides configurable system-level behavior through a WebUI and a structured package management framework.
 
