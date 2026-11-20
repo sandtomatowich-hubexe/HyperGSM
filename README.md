@@ -6,10 +6,10 @@
     alt="HyperGSM Banner"
     width="100%"
   />
-
+  
+# What is HyperGSM?
   <img
- # What is HyperGSM?  
- src="https://raw.githubusercontent.com/sandtomatowich-hubexe/sandtomatowich-hubexe/main/HyperGSM.svg"
+src="https://raw.githubusercontent.com/sandtomatowich-hubexe/sandtomatowich-hubexe/main/HyperGSM.svg"
     alt="HyperGSM"
     width="100%"
   />
