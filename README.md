@@ -13,7 +13,8 @@
     width="100%"
   />
 </p>
-### What is HyperGSM?
+###What is HyperGSM?
+
 **HyperGSM (Hyper Google System Manager)** is an Android system management module designed to improve Google Mobile Services integration, notification reliability, and background behavior on HyperOS.
 
 Built around a modular architecture, HyperGSM combines system-level configuration, battery management, package validation, and a WebUI into a unified management environment.
