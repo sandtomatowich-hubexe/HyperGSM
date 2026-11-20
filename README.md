@@ -1,72 +1,101 @@
-# HyperGSM
+HyperGSM
 
-A KernelSU / Magisk / APatch module for HyperOS that keeps Google Play Services and push notifications working properly on CN ROMs, and tames Play Services battery drain on Global ROMs. It includes a WebUI for configuration.
+<p align="center">
+  <!-- TODO: Replace with the actual battery banner image URL -->
+  <img src="assets/HyperGSM-Banner.png" alt="HyperGSM Banner" width="100%">
+</p><p align="center">
+  <!-- TODO: Replace with the custom HyperGSM SVG URL -->
+  <p align="center">
+  <img
+    src="https://raw.githubusercontent.com/sandtomatowich-hubexe/sandtomatowich-hubexe/main/HyperGSM.svg"
+    alt="HyperGSM"
+    width="100%"
+  />
+</p>
+</p>HyperGSM is an Android system management module focused on Google Mobile Services integration, notification reliability, and GMS battery management on HyperOS.
 
-> **Status:** v0.3, test build. Developed against the Poco X6 Pro (`duchamp`) on HyperOS 3.0.305 / Android 16.
+Designed with a modular architecture, HyperGSM provides configurable system-level behavior through a WebUI and a structured package management framework.
 
-## What it does
+---
 
-**1. Notification delay fix (no framework patch)**
-Keeps your priority apps out of background restrictions:
-- Doze whitelist
-- `RUN_IN_BACKGROUND` / `RUN_ANY_IN_BACKGROUND` appops
-- MIUI autostart appop (best effort)
-- "Active" app standby bucket
+Features
 
-Telegram and WhatsApp are preloaded as priority apps. Add any other package from the WebUI. Changes apply immediately.
+- Notification Management — Improve background notification reliability through configurable system settings.
+- GMS Battery Management — Configurable battery profiles for Google Mobile Services.
+- CN ROM Compatibility — Dedicated support mechanisms for Google services on China ROMs.
+- WebUI Configuration — Manage module settings through an integrated interface.
+- Manifest-Based Package Management — Structured package definitions with version pinning and validation.
+- Deployment Validation — Compatibility, package integrity, signing certificate, and partition checks before deployment.
+- Diagnostic Reports — Generate reports containing device information, manifest revisions, and staged file hashes.
 
-**2. GMS battery profiles (any ROM)**
+GMS Management
 
-| Profile | Behaviour |
-|---|---|
-| Off | Nothing disabled. Play Services, GSF and Play Store are kept unrestricted for the fastest push. |
-| Balanced | Disables Play Services analytics and measurement components. Push, location and sync are untouched. |
-| Aggressive | Balanced, plus removes Play Services from the Doze whitelist. Saves more, but push can arrive late. |
+HyperGSM provides configurable GMS management with three battery profiles:
 
-The default is chosen at install: **Off** on CN ROMs, **Balanced** on Global ROMs. Change it on the Battery page, pick a profile and tap *Apply*.
+Profile| Description
+Off| Disables additional GMS battery management
+Balanced| Moderate background management
+Aggressive| More restrictive battery-oriented management
 
-**3. CN ROM support**
-On CN ROMs the installer also adds a sysconfig allowlist so Play Services is allowed in power-save and data-saver modes.
+Available defaults may differ between ROM configurations.
 
-## What it does not do
+Google Package Framework
 
-- It does **not** bundle Google Play Services. On a CN ROM, install it yourself.
-- It does **not** ship the CN location overlays (they need a compiled overlay APK).
-- It does **not** patch `framework.jar` or `services.jar`. A Focus notification whitelist patch is a possible later step if the diagnostics show it is needed.
+Starting with v0.5, HyperGSM introduces a manifest-based package management architecture.
 
-## Requirements
+The framework supports:
 
-- Android 14 or newer (built for HyperOS on Android 16)
-- Root with KernelSU, Magisk or APatch.
-- For the WebUI: KernelSU or APatch (shows an Open button on the module), or a WebUI app such as MMRL / KsuWebUI on Magisk. The WebUI files live in `webroot/`.
+- Version-pinned packages
+- SHA-256 integrity verification
+- Signing certificate verification
+- Split APK validation
+- Partition-aware deployment planning
+- Package compatibility checks
+- Runtime permission grant definitions
+- Deployment reports
 
-## Install
+The framework is still experimental. Actual Google app deployment requires validated package builds and real-device testing.
 
-1. Flash `HyperGSM-vX.Y.zip` from your root manager.
-2. Reboot.
-3. Open the module's WebUI from the manager.
+WebUI
 
-## Using the WebUI
+The WebUI provides access to the module's configuration and diagnostic features.
 
-- **Home:** push connection status, active profile, Play Services state, quick toggles, Apply.
-- **Notify:** priority app list and a diagnostics button (runs in the background).
-- **Battery:** GMS battery profile list with an Apply button.
-- **About:** recent module log.
+Available sections include:
 
-Settings live in `/data/adb/modules/hypergsm/settings.conf`. Edit by hand if you prefer, then run `sh /data/adb/modules/hypergsm/apply.sh`.
+- Home — Module overview and status
+- Notify — Notification management
+- Battery — GMS battery profiles
+- Google — Package information and deployment status
+- About — Module information
 
-## Diagnostics
+Compatibility
 
-If notifications are still delayed, run diagnostics on the Notify page and share the output. It reports Play Services push sockets, Doze and appop state, standby buckets, and related notification log lines.
+- Android 14+
+- HyperOS-based ROMs
+- Root access through KernelSU, Magisk, or APatch
 
-## Uninstall
+WebUI availability depends on the installed root solution and its supported WebUI manager.
 
-Remove the module from your root manager and reboot. The uninstall script re-enables any Play Services components the module disabled.
+Installation
 
-## Credits
+1. Download the latest available release.
+2. Flash the ZIP through your supported root manager.
+3. Reboot your device.
+4. Open the HyperGSM WebUI to configure available features.
 
-The WebUI is based on the HyperTouch WebUI, used with its author's permission.
+Note: Experimental Google package deployment features are not yet generally available.
 
-## License
+Development
 
-GPL-3.0. See [LICENSE](LICENSE).
+HyperGSM is developed with a focus on modularity, package integrity, compatibility checks, and safe system integration.
+
+Contributions, testing, and technical feedback are welcome.
+
+License
+
+This project is licensed under the GNU General Public License v3.0.
+
+Credits
+
+- HyperTouch — WebUI foundation and inspiration.
+- MindTheGapps — Reference for Google package organization and configuration research.
