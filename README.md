@@ -6,6 +6,7 @@
     alt="HyperGSM Banner"
     width="100%"
   />
+  [![HyperGSM CI / Release](https://github.com/sandtomatowich-hubexe/HyperGSM/actions/workflows/hypergsm.yml/badge.svg)](https://github.com/sandtomatowich-hubexe/HyperGSM/actions/workflows/hypergsm.yml)
   
 # What is HyperGSM?
   <img
