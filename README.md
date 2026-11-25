@@ -7,6 +7,7 @@
     width="100%"
   />
   [![HyperGSM CI / Release](https://github.com/sandtomatowich-hubexe/HyperGSM/actions/workflows/hypergsm.yml/badge.svg)](https://github.com/sandtomatowich-hubexe/HyperGSM/actions/workflows/hypergsm.yml)
+  [![Telegram](https://img.shields.io/badge/Telegram-Chat%20Topic-26A5E4?logo=telegram&logoColor=white)](https://t.me/MqDeadline)
   
 # What is HyperGSM?
   <img
