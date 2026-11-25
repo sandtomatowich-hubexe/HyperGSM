@@ -6,8 +6,19 @@
     alt="HyperGSM Banner"
     width="100%"
   />
-  [![HyperGSM CI / Release](https://github.com/sandtomatowich-hubexe/HyperGSM/actions/workflows/hypergsm.yml/badge.svg)](https://github.com/sandtomatowich-hubexe/HyperGSM/actions/workflows/hypergsm.yml)
-  [![Telegram](https://img.shields.io/badge/Telegram-Chat%20Topic-26A5E4?logo=telegram&logoColor=white)](https://t.me/MqDeadline)
+  <p align="center">
+
+[![Build](https://img.shields.io/github/actions/workflow/status/sandtomatowich-hubexe/HyperGSM/hypergsm.yml?label=build&logo=githubactions&logoColor=white)](https://github.com/sandtomatowich-hubexe/HyperGSM/actions/workflows/hypergsm.yml)
+[![Release](https://img.shields.io/github/v/release/sandtomatowich-hubexe/HyperGSM?include_prereleases&label=release&logo=github)](https://github.com/sandtomatowich-hubexe/HyperGSM/releases)
+[![Downloads](https://img.shields.io/github/downloads/sandtomatowich-hubexe/HyperGSM/total?label=downloads&logo=github)](https://github.com/sandtomatowich-hubexe/HyperGSM/releases)
+
+![License](https://img.shields.io/github/license/sandtomatowich-hubexe/HyperGSM?label=license)
+![Android](https://img.shields.io/badge/Android-14%2B-3DDC84?logo=android&logoColor=white)
+![Root](https://img.shields.io/badge/Root-Magisk%20%7C%20KernelSU%20%7C%20APatch-blue)
+
+[![Telegram](https://img.shields.io/badge/Telegram-Chat%20Topic-26A5E4?logo=telegram&logoColor=white)](https://t.me/MqDeadline)
+
+</p>
   
 # What is HyperGSM?
   <img
